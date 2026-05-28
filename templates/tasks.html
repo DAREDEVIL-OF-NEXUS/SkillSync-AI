@@ -1,0 +1,209 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Tasks
+{% endblock %}
+
+{% block main %}
+
+<div class="container">
+
+    <!-- Page Header -->
+
+    <div class="text-center mb-5">
+
+        <h1 class="display-5 fw-bold">
+            Task Manager
+        </h1>
+
+        <p class="lead">
+            Organize your assignments, study plans, and deadlines.
+        </p>
+
+    </div>
+
+    <!-- Add Task Form -->
+
+    <div class="card shadow-lg p-4 mb-5">
+
+        <h2 class="mb-4">
+            Add New Task
+        </h2>
+
+        <form action="/add_task" method="post">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Task Name
+                    </label>
+
+                    <input
+                        autocomplete="off"
+                        autofocus
+                        class="form-control"
+                        name="task"
+                        placeholder="e.g. Complete DSA Sheet"
+                        type="text"
+                    >
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Subject
+                    </label>
+
+                    <input
+                        class="form-control"
+                        name="subject"
+                        placeholder="e.g. Data Structures"
+                        type="text"
+                    >
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Deadline
+                    </label>
+
+                    <input
+                        class="form-control"
+                        name="deadline"
+                        type="date"
+                    >
+
+                </div>
+
+            </div>
+
+            <button class="btn btn-primary">
+                Add Task
+            </button>
+
+        </form>
+
+    </div>
+
+    <!-- Task List -->
+
+    <div class="card shadow-lg p-4">
+
+        <h2 class="mb-4">
+            Your Tasks
+        </h2>
+
+        {% if tasks %}
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-dark">
+
+                        <tr>
+
+                            <th>Task</th>
+                            <th>Subject</th>
+                            <th>Deadline</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for task in tasks %}
+
+                        <tr>
+
+                            <td>
+                                {{ task.task }}
+                            </td>
+
+                            <td>
+                                {{ task.subject }}
+                            </td>
+
+                            <td>
+                                {{ task.deadline }}
+                            </td>
+
+                            <td>
+
+                                {% if task.completed == 1 %}
+
+                                    <span class="badge bg-success">
+                                        Completed
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-warning text-dark">
+                                        Pending
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+
+                                {% if task.completed == 0 %}
+
+                                <a
+                                    href="/complete_task/{{ task.id }}"
+                                    class="btn btn-success btn-sm me-2"
+                                >
+                                    Complete
+                                </a>
+
+                                {% endif %}
+
+                                <a
+                                    href="/delete_task/{{ task.id }}"
+                                    class="btn btn-danger btn-sm"
+                                >
+                                    Delete
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="text-center p-5">
+
+                <h3 class="mb-3">
+                    No Tasks Added Yet
+                </h3>
+
+                <p class="text-muted">
+                    Start organizing your productivity by adding tasks.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

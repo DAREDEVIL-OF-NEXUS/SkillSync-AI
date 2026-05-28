@@ -1,0 +1,206 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Dashboard
+{% endblock %}
+
+{% block main %}
+
+<div class="container">
+
+    <!-- Hero -->
+
+    <div class="text-center mb-5">
+
+        <h1 class="display-5 fw-bold">
+            Student Dashboard
+        </h1>
+
+        <p class="lead">
+            Manage your study tasks, notes, and productivity in one place.
+        </p>
+
+    </div>
+
+    <!-- Analytics Cards -->
+
+    <div class="row text-center mb-5">
+
+        <div class="col-md-6 mb-4">
+
+            <div class="card shadow p-4 h-100">
+
+                <h3>
+                    Total Tasks
+                </h3>
+
+                <h1 class="display-4 text-primary">
+                    {{ total_tasks }}
+                </h1>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-6 mb-4">
+
+            <div class="card shadow p-4 h-100">
+
+                <h3>
+                    Completed Tasks
+                </h3>
+
+                <h1 class="display-4 text-success">
+                    {{ completed_tasks }}
+                </h1>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Quick Navigation -->
+
+    <div class="row text-center mb-5">
+
+        <div class="col-md-4 mb-4">
+
+            <a href="/tasks" class="text-decoration-none">
+
+                <div class="card shadow p-4 h-100 dashboard-card">
+
+                    <h3>
+                        Task Manager
+                    </h3>
+
+                    <p>
+                        Add and organize your study tasks.
+                    </p>
+
+                </div>
+
+            </a>
+
+        </div>
+
+        <div class="col-md-4 mb-4">
+
+            <a href="/notes" class="text-decoration-none">
+
+                <div class="card shadow p-4 h-100 dashboard-card">
+
+                    <h3>
+                        Notes
+                    </h3>
+
+                    <p>
+                        Save important study notes and resources.
+                    </p>
+
+                </div>
+
+            </a>
+
+        </div>
+
+        <div class="col-md-4 mb-4">
+
+            <a href="/ai_assistant" class="text-decoration-none">
+
+                <div class="card shadow p-4 h-100 dashboard-card">
+
+                    <h3>
+                        AI Assistant
+                    </h3>
+
+                    <p>
+                        Receive AI-powered study guidance.
+                    </p>
+
+                </div>
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- Recent Tasks -->
+
+    <div class="card shadow-lg p-4 mb-5">
+
+        <h2 class="mb-4">
+            Recent Tasks
+        </h2>
+
+        {% if tasks %}
+
+            <div class="table-responsive">
+
+                <table class="table table-striped">
+
+                    <thead class="table-dark">
+
+                        <tr>
+                            <th>Task</th>
+                            <th>Subject</th>
+                            <th>Deadline</th>
+                            <th>Status</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for task in tasks[:5] %}
+
+                        <tr>
+
+                            <td>{{ task.task }}</td>
+
+                            <td>{{ task.subject }}</td>
+
+                            <td>{{ task.deadline }}</td>
+
+                            <td>
+
+                                {% if task.completed == 1 %}
+
+                                    <span class="badge bg-success">
+                                        Completed
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-warning text-dark">
+                                        Pending
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <p class="text-muted">
+                No tasks added yet.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

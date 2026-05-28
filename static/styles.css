@@ -1,0 +1,133 @@
+/* General */
+
+body
+{
+    background-color: #f4f7fb;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #222;
+}
+
+
+/* Navbar */
+
+.navbar-brand
+{
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+}
+
+.nav-link
+{
+    font-weight: 500;
+}
+
+.nav-link:hover
+{
+    color: #0d6efd !important;
+}
+
+
+/* Hero Sections */
+
+.hero-section
+{
+    padding: 60px 20px;
+}
+
+
+/* Cards */
+
+.card
+{
+    border: none;
+    border-radius: 15px;
+}
+
+.card:hover
+{
+    transform: translateY(-3px);
+    transition: 0.3s ease;
+}
+
+
+/* Dashboard Cards */
+
+.dashboard-card
+{
+    transition: 0.3s ease;
+}
+
+.dashboard-card:hover
+{
+    background-color: #f0f4ff;
+}
+
+
+/* Buttons */
+
+.btn
+{
+    border-radius: 10px;
+    font-weight: 500;
+}
+
+
+/* Tables */
+
+.table
+{
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+
+/* Forms */
+
+.form-control,
+.form-select
+{
+    border-radius: 10px;
+    padding: 10px;
+}
+
+textarea
+{
+    resize: none;
+}
+
+
+/* Notes */
+
+.note-card
+{
+    min-height: 250px;
+}
+
+
+/* Footer */
+
+footer
+{
+    margin-top: 60px;
+    padding: 20px;
+    text-align: center;
+    color: gray;
+}
+
+
+/* Responsive */
+
+@media (max-width: 768px)
+{
+    .display-3,
+    .display-4,
+    .display-5
+    {
+        font-size: 2rem;
+    }
+
+    .card
+    {
+        margin-bottom: 20px;
+    }
+}

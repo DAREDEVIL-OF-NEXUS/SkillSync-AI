@@ -1,0 +1,109 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Analytics
+{% endblock %}
+
+{% block main %}
+
+<div class="container">
+
+    <div class="text-center mb-5">
+
+        <h1 class="display-5 fw-bold">
+            Productivity Analytics
+        </h1>
+
+        <p class="lead">
+            Track your academic productivity and study consistency.
+        </p>
+
+    </div>
+
+    <!-- Stats Cards -->
+
+    <div class="row text-center mb-5">
+
+        <div class="col-md-4 mb-4">
+
+            <div class="card shadow p-4 h-100">
+
+                <h3>
+                    Total Tasks
+                </h3>
+
+                <h1 class="display-4 text-primary">
+                    {{ total_tasks }}
+                </h1>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4 mb-4">
+
+            <div class="card shadow p-4 h-100">
+
+                <h3>
+                    Completed Tasks
+                </h3>
+
+                <h1 class="display-4 text-success">
+                    {{ completed_tasks }}
+                </h1>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4 mb-4">
+
+            <div class="card shadow p-4 h-100">
+
+                <h3>
+                    Completion Rate
+                </h3>
+
+                <h1 class="display-4 text-warning">
+
+                    {% if total_tasks > 0 %}
+                        {{ ((completed_tasks / total_tasks) * 100) | round(1) }}%
+                    {% else %}
+                        0%
+                    {% endif %}
+
+                </h1>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Motivation -->
+
+    <div class="card shadow-lg p-5">
+
+        <h2 class="mb-4">
+            Study Motivation
+        </h2>
+
+        <p class="lead">
+
+            Consistency is more important than intensity.
+            Small daily improvements lead to long-term success.
+
+        </p>
+
+        <p>
+
+            Keep tracking your tasks, completing goals,
+            and improving your study discipline.
+
+        </p>
+
+    </div>
+
+</div>
+
+{% endblock %}

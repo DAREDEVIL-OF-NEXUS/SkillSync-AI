@@ -1,0 +1,133 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Notes
+{% endblock %}
+
+{% block main %}
+
+<div class="container">
+
+    <!-- Header -->
+
+    <div class="text-center mb-5">
+
+        <h1 class="display-5 fw-bold">
+            Study Notes
+        </h1>
+
+        <p class="lead">
+            Store important concepts, revision material, and learning resources.
+        </p>
+
+    </div>
+
+    <!-- Add Note Form -->
+
+    <div class="card shadow-lg p-4 mb-5">
+
+        <h2 class="mb-4">
+            Add New Note
+        </h2>
+
+        <form action="/add_note" method="post">
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Note Title
+                </label>
+
+                <input
+                    autocomplete="off"
+                    class="form-control"
+                    name="title"
+                    placeholder="e.g. Machine Learning Revision"
+                    type="text"
+                >
+
+            </div>
+
+            <div class="mb-4">
+
+                <label class="form-label">
+                    Note Content
+                </label>
+
+                <textarea
+                    class="form-control"
+                    name="content"
+                    rows="6"
+                    placeholder="Write your notes here..."
+                ></textarea>
+
+            </div>
+
+            <button class="btn btn-primary">
+                Save Note
+            </button>
+
+        </form>
+
+    </div>
+
+    <!-- Notes Grid -->
+
+    {% if notes %}
+
+        <div class="row">
+
+            {% for note in notes %}
+
+            <div class="col-lg-6 mb-4">
+
+                <div class="card shadow h-100 p-4 note-card">
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+
+                        <h3>
+                            {{ note.title }}
+                        </h3>
+
+                        <a
+                            href="/delete_note/{{ note.id }}"
+                            class="btn btn-danger btn-sm"
+                        >
+                            Delete
+                        </a>
+
+                    </div>
+
+                    <hr>
+
+                    <p style="white-space: pre-wrap;">
+                        {{ note.content }}
+                    </p>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="card shadow p-5 text-center">
+
+            <h3 class="mb-3">
+                No Notes Available
+            </h3>
+
+            <p class="text-muted">
+                Save notes to organize your learning and revision.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
