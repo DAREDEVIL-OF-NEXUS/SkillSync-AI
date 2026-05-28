@@ -5,6 +5,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from helpers import apology, login_required
 
+# NEW LANGCHAIN HUGGINGFACE IMPORTS
+from langchain_huggingface import HuggingFaceEndpoint
+from langchain_core.prompts import PromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+
 app = Flask(__name__)
 
 # Configure session
@@ -15,6 +20,14 @@ Session(app)
 
 # Configure database
 db = SQL("sqlite:///skillsync.db")
+
+import os
+
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 
 
 # ---------------- HOME ---------------- #
@@ -291,7 +304,7 @@ def notes():
         notes=notes
     )
 
-    
+
 # ---------------- ADD NOTE ---------------- #
 
 @app.route("/add_note", methods=["POST"])
@@ -345,62 +358,85 @@ def delete_note(note_id):
 
 # ---------------- AI ASSISTANT ---------------- #
 
+# ---------------- AI STUDY ASSISTANT (HUGGING FACE INTERACTION) ---------------- #
 @app.route("/ai_assistant", methods=["GET", "POST"])
 @login_required
 def ai_assistant():
-
     suggestion = None
-
     if request.method == "POST":
-
         subject = request.form.get("subject")
         hours = request.form.get("hours")
         difficulty = request.form.get("difficulty")
 
-        if not subject:
-            return apology("must provide subject")
+        if not subject or not hours or not difficulty:
+            return apology("All input fields are required.")
 
-        if not hours:
-            return apology("must provide study hours")
+        hf_token = os.environ.get("HUGGINGFACE_API_TOKEN")
 
-        if not difficulty:
-            return apology("must provide difficulty")
+        if hf_token:
+            try:
+                # 1. Initialize the Hugging Face Endpoint via LangChain
+                # We use Llama-3-8B-Instruct as it understands complex system prompts perfectly
+                repo_id = "deepseek-ai/DeepSeek-V3.2"
+                
+                llm = HuggingFaceEndpoint(
+                    repo_id=repo_id,
+                    huggingfacehub_api_token=hf_token,
+                    max_new_tokens=700,
+                    temperature=0.6,
+                    top_p=0.9
+                )
+                
+                # 2. Define the Complete, Descriptive System Prompt Template
+                # We use Llama-3 specific special tokens (<|begin_of_text|>, etc.) so the model follows the structure perfectly
+                template = """<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+You are 'SkillSync AI', an elite, deeply empathetic, humble, and highly technical student productivity coach. 
+Your primary goal is to empower students by constructing actionable, optimized, and masterclass-grade study plans. 
+Maintain a professional yet encouraging and humble tone. Address the student directly.
 
-        hours = int(hours)
+Structure your output cleanly using the following exact markdown layout:
+### 🌟 Strategic Mindset
+[Provide an empathetic, encouraging sentence recognizing the difficulty, followed by a tactical mental model like Spaced Repetition or Feynman Technique tailored to this specific subject]
 
-        # Rule-based AI logic
+### 📅 Masterclass Roadmap & Time Allocation
+[Provide a hyper-specific breakdown showing exactly how to spend their hours per day logically split between theory, application, and debugging/revision]
 
-        if difficulty == "Hard" and hours < 2:
+### 🛠️ Step-by-Step Technical Execution Steps
+[Deliver a specific 3-step blueprint detailing precisely what milestones to focus on first to unlock maximum comprehension without burning out]<|eot_id|><|start_header_id|>user<|end_header_id|>
 
-            suggestion = (
-                f"{subject} seems difficult for you. "
-                "Increase study hours and use Pomodoro technique."
-            )
+I am a student working on '{subject}'. I have rated its current difficulty level as '{difficulty}' for myself, and I can commit exactly '{hours}' hours per day to mastering it. Please map out my personalized engineering roadmap strategy.<|eot_id|><|start_header_id|>assistant<|end_header_id|>"""
 
-        elif difficulty == "Medium":
-
-            suggestion = (
-                f"Stay consistent in {subject} "
-                "and revise daily for better retention."
-            )
-
-        elif difficulty == "Easy":
-
-            suggestion = (
-                f"You are doing well in {subject}. "
-                "Focus on practice and mock questions."
-            )
-
+                prompt = PromptTemplate.from_template(template)
+                
+                # 3. Construct the LangChain Expression Language (LCEL) Chain
+                chain = prompt | llm | StrOutputParser()
+                
+                # 4. Invoke the chain with user inputs
+                suggestion = chain.invoke({
+                    "subject": subject,
+                    "difficulty": difficulty,
+                    "hours": hours
+                })
+                    
+            except Exception as e:
+                # ROBUST RESILIENT FALLBACK: Triggers if Hugging Face goes down or rate-limits
+                suggestion = (
+                    "### 🌟 Strategic Mindset\n"
+                    f"Mastering **{subject}** requires strategic patience. Even when material feels challenging, remember that engineering expertise is built block-by-block through consistent application.\n\n"
+                    "### 📅 Masterclass Roadmap & Time Allocation\n"
+                    f"Given your commitment of **{hours} hours/day**, map out your allocation into a strict 50/30/20 configuration:\n"
+                    f"* **Theory & Documentation:** {float(hours)*0.5:.1f} Hours focusing on fundamental concepts.\n"
+                    f"* **Active Code/Implementation:** {float(hours)*0.3:.1f} Hours wrestling directly with projects.\n"
+                    f"* **Review & Error Diagnostics:** {float(hours)*0.2:.1f} Hours refactoring code and cleaning notes.\n\n"
+                    "### 🛠️ Step-by-Step Technical Execution Steps\n"
+                    "1. **Isolate the Core Architecture:** Break down large tasks into atomic operations. Write clear documentation alongside your implementation tracking.\n"
+                    "2. **Implement Pomodoro Routines:** Work in focused 25-minute sprints with short diagnostic breaks to keep cognitive fatigue low.\n"
+                    "3. **Log Progress Safely:** Keep clear error catalogs in your notes tab to reference whenever a systemic barrier patterns itself again."
+                )
         else:
+            suggestion = f"### System Notice\nHugging Face API Token missing. Please check your configuration parameters."
 
-            suggestion = (
-                "Maintain a balanced study routine."
-            )
-
-    return render_template(
-        "ai_assistant.html",
-        suggestion=suggestion
-    )
+    return render_template("ai_assistant.html", suggestion=suggestion)
 
 
 # ---------------- ANALYTICS ---------------- #

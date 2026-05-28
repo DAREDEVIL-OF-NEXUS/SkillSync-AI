@@ -89,19 +89,18 @@
         </div>
 
         {% if suggestion %}
-
-        <div class="card shadow mt-4 p-4">
-
-            <h3 class="text-success">
-                AI Suggestion
-            </h3>
-
-            <p class="lead">
-                {{ suggestion }}
-            </p>
-
+        <div class="container mt-5">
+            <div class="card shadow-sm border-0 bg-light">
+                <div class="card-body p-5">
+                    <h2 class="h4 text-primary mb-4 border-bottom pb-2">📋 Your Personalized Roadmap</h2>
+                    
+                    <div class="ai-response-text lh-lg text-secondary" style="white-space: pre-wrap; font-size: 1.05rem;">
+                        {{ suggestion }}
+                    </div>
+                    
+                </div>
+            </div>
         </div>
-
         {% endif %}
 
     </div>

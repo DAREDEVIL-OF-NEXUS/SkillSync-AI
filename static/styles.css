@@ -131,3 +131,16 @@ footer
         margin-bottom: 20px;
     }
 }
+
+/* Custom spacing tweaks for your dynamic AI output box */
+.ai-response-text {
+    line-height: 1.8 !important; /* Spreads lines apart comfortably */
+    letter-spacing: 0.02em;
+}
+
+.ai-response-text h3 {
+    margin-top: 1.5rem !important;
+    margin-bottom: 0.75rem !important;
+    color: #2b3a4a;
+    font-weight: 600;
+}
