@@ -1,5 +1,5 @@
 # SkillSync AI
-#### Video Demo: https://www.loom.com/share/354260995c3c467b85586e62345077d8      
+#### Video Demo: https://youtu.be/ZVjO-USk0rY      
 #### Live Deployment URL: https://skillsync-ai-las7.onrender.com
 
 ## Description:
