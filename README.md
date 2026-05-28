@@ -1,3 +1,10 @@
+# SkillSync AI
+#### Video Demo: https://www.loom.com/share/354260995c3c467b85586e62345077d8      
+#### Live Deployment URL: https://skillsync-ai-las7.onrender.com
+
+## Description:
+SkillSync AI is an AI-powered student productivity and study management platform...
+
 # 🧠 SkillSync AI
 
 > *An AI-powered student productivity platform — built from scratch, with curiosity and a lot of late nights.*
