@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, render_template, request, redirect, session, flash
 from flask_session import Session
 from cs50 import SQL
@@ -19,9 +21,25 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Configure database
-db = SQL("sqlite:///skillsync.db")
+# Configure database
+db_path = "skillsync.db"
 
-import os
+# CRITICAL FIX: Physically create an empty file if it doesn't exist on Render's disk yet
+if not os.path.exists(db_path):
+    open(db_path, "w").close()
+
+# Now connect safely using the CS50 wrapper
+db = SQL(f"sqlite:///{db_path}")
+
+# Automatically initialize tables if they don't exist in the deployment environment
+try:
+    db.execute("SELECT * FROM users LIMIT 1")
+except Exception:
+    db.execute("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL UNIQUE, hash TEXT NOT NULL)")
+    db.execute("CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, task TEXT NOT NULL, subject TEXT NOT NULL, deadline TEXT, completed INTEGER DEFAULT 0, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY(user_id) REFERENCES users(id))")
+    db.execute("CREATE TABLE IF NOT EXISTS notes (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, title TEXT NOT NULL, content TEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY(user_id) REFERENCES users(id))")
+    db.execute("CREATE TABLE IF NOT EXISTS analytics (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, study_hours INTEGER DEFAULT 0, streak INTEGER DEFAULT 0, tasks_completed INTEGER DEFAULT 0, FOREIGN KEY(user_id) REFERENCES users(id))")
+
 
 try:
     from dotenv import load_dotenv
